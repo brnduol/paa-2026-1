@@ -117,7 +117,18 @@ Qed.
 (** Questão 2 *)
 Lemma permutation_nil: forall l, permutation nil l -> l = nil.
 Proof.
-Admitted.
+intros l1 l2 a.
+  unfold permutation. intro n.
+  simpl.
+  destruct (n =? a) eqn:Hna.
+  - (* n = a: ambos os lados têm S(...) *)
+    apply Nat.eqb_eq in Hna. subst.
+    rewrite num_oc_S. reflexivity.
+  - (* n ≠ a: a não contribui para a contagem *)
+    rewrite num_oc_neq.
+    + reflexivity.
+    + exact Hna.
+Qed.
 
 Lemma permutation_sym: forall l l', permutation l l' -> permutation l' l.
 Proof.
