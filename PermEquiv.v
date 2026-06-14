@@ -83,7 +83,36 @@ Qed.
 (** Questão 1 *)
 Lemma perm_to_permutation: forall l l', perm l l' -> permutation l l'.
 Proof.
-Admitted.
+intros l l' Hperm.
+  induction Hperm as
+    [ l                          (* perm_refl  *)
+    | x t t' _ IH               (* perm_hd    *)
+    | x y t t' _ IH             (* perm_swap  *)
+    | l1 l2 l3 _ IH12 _ IH23   (* perm_trans *) ].
+ 
+  - (* perm_refl: l ~ l, trivial *)
+    unfold permutation. intro n. reflexivity.
+ 
+  - (* perm_hd: x::t ~ x::t', sabemos t ~ t' *)
+    unfold permutation in *. intro n. simpl.
+    destruct (n =? x).
+    + f_equal. apply IH.
+    + apply IH.
+ 
+  - (* perm_swap: x::y::t ~ y::x::t' *)
+    (* num_oc n (x::y::t') = num_oc n (y::x::t') qualquer que seja n *)
+    unfold permutation in *. intro n. simpl.
+    destruct (n =? x) eqn:Ex; destruct (n =? y) eqn:Ey.
+    + (* n = x = y *)
+      apply Nat.eqb_eq in Ex, Ey. subst.
+      rewrite IH. reflexivity.
+    + rewrite IH. reflexivity.
+    + rewrite IH. reflexivity.
+    + rewrite IH. reflexivity.
+ 
+  - (* perm_trans: l1 ~ l2 ~ l3 *)
+    apply permutation_trans with l2; assumption.
+Qed.
 
 (** Questão 2 *)
 Lemma permutation_nil: forall l, permutation nil l -> l = nil.
